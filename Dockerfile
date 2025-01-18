@@ -1,9 +1,11 @@
 # Dockerfile
 FROM node:14
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /my-app
+# Install app dependencies
+COPY package*.json ./
+COPY . .
 # Install app dependencies	
-COPY package* .json  ./
 RUN npm install
 # Bundle app source
 EXPOSE 3000
