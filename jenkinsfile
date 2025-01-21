@@ -1,0 +1,48 @@
+pipeline 
+    {agent any
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/fatimssi/com.docker.devenvironments.code.gitt'
+            }      
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build('my-app')
+                    
+                }
+                
+            }
+            
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://hub.docker.com/repository/docker/my-app','f9e5e845-fe68-46d6-99dc-5d2458864bd5') {
+                        docker.image('my-app').push('latest')
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    kubernetesDeploy(
+                        kubeconfigId: 'kubeconfig',
+                        configs: 'k8s-deployment.yaml',
+                        enableConfigSubstitution: true
+                        )
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+        
