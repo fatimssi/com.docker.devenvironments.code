@@ -16,4 +16,4 @@ spec:
         - name: my-app
           image: fatna/my-app:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 3000
