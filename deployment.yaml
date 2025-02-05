@@ -3,17 +3,38 @@ kind: Deployment
 metadata:
   name: my-app
 spec:
-  replicas: 2
+  replicas: 2  # Nombre de pods à déployer
   selector:
     matchLabels:
-      app: my-app
+      app: my-app  # Doit correspondre aux labels du template
   template:
     metadata:
       labels:
-        app: my-app
+        app: my-app  # Labels appliqués aux pods
     spec:
       containers:
-      - name: my-app
-        image: fatna/my-app:latest
-        ports:
-        - containerPort: 3000
+        - name: my-app  # Nom du conteneur
+          image: fatna/my-app:latest  # Image Docker à utiliser
+          ports:
+            - containerPort: 3000  # Port exposé par le conteneur
+          # Ajoutez des ressources limites et requises pour une meilleure gestion
+          resources:
+            requests:
+              cpu: "100m"  # Demande minimale de CPU
+              memory: "128Mi"  # Demande minimale de mémoire
+            limits:
+              cpu: "500m"  # Limite maximale de CPU
+              memory: "512Mi"  # Limite maximale de mémoire
+          # Ajoutez des probes pour vérifier l'état du conteneur
+          livenessProbe:
+            httpGet:
+              path: /healthz  # Endpoint de santé
+              port: 3000
+            initialDelaySeconds: 5  # Délai avant la première vérification
+            periodSeconds: 10  # Fréquence des vérifications
+          readinessProbe:
+            httpGet:
+              path: /ready  # Endpoint de readiness
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
